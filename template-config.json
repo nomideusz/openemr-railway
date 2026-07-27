@@ -1,0 +1,96 @@
+{
+  "buckets": {},
+  "services": {
+    "0e30e310-0001-4000-8000-000000000001": {
+      "icon": "https://github.com/openemr.png",
+      "name": "openemr",
+      "build": {
+        "dockerfilePath": "Dockerfile"
+      },
+      "deploy": {
+        "startCommand": null,
+        "healthcheckPath": null,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "source": {
+        "repo": "https://github.com/nomideusz/openemr-railway",
+        "rootDirectory": "/"
+      },
+      "variables": {
+        "MYSQL_HOST": {
+          "defaultValue": "${{mysql.RAILWAY_PRIVATE_DOMAIN}}",
+          "description": "Wired to the bundled MySQL - leave as is",
+          "isOptional": false
+        },
+        "MYSQL_ROOT_PASS": {
+          "defaultValue": "${{mysql.MYSQL_ROOT_PASSWORD}}",
+          "description": "Root credentials for first-boot database creation - leave as is",
+          "isOptional": false
+        },
+        "MYSQL_USER": {
+          "defaultValue": "openemr",
+          "description": "Application database user, created on first boot",
+          "isOptional": false
+        },
+        "MYSQL_PASS": {
+          "defaultValue": "${{secret(20)}}",
+          "description": "Auto-generated application database password",
+          "isOptional": false
+        },
+        "OE_USER": {
+          "defaultValue": "admin",
+          "description": "OpenEMR admin username, created on first boot",
+          "isOptional": false
+        },
+        "OE_PASS": {
+          "defaultValue": "${{secret(16)}}",
+          "description": "Auto-generated OpenEMR admin password - change it after first login",
+          "isOptional": false
+        }
+      },
+      "networking": {
+        "serviceDomains": {
+          "<hasDomain>": {}
+        }
+      },
+      "volumeMounts": {
+        "0e30e310-0001-4000-8000-000000000001": {
+          "mountPath": "/var/www/localhost/htdocs/openemr/sites"
+        }
+      }
+    },
+    "0e30e310-0002-4000-8000-000000000002": {
+      "icon": "https://www.mysql.com/common/logos/logo-mysql-170x115.png",
+      "name": "mysql",
+      "build": {
+        "dockerfilePath": "Dockerfile"
+      },
+      "deploy": {
+        "startCommand": null,
+        "healthcheckPath": null,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "source": {
+        "repo": "https://github.com/nomideusz/openemr-railway",
+        "rootDirectory": "/mysql"
+      },
+      "variables": {
+        "MYSQL_ROOT_PASSWORD": {
+          "defaultValue": "${{secret(24)}}",
+          "description": "Auto-generated MySQL root password",
+          "isOptional": false
+        }
+      },
+      "networking": {
+        "serviceDomains": {}
+      },
+      "volumeMounts": {
+        "0e30e310-0002-4000-8000-000000000002": {
+          "mountPath": "/var/lib/mysql"
+        }
+      }
+    }
+  }
+}
