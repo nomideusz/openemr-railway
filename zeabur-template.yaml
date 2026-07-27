@@ -1,0 +1,93 @@
+# yaml-language-server: $schema=https://schema.zeabur.app/template.json
+apiVersion: zeabur.com/v1
+kind: Template
+metadata:
+    name: OpenEMR
+spec:
+    description: Electronic medical records & practice management — self-hosted EHR.
+    icon: https://github.com/openemr.png
+    tags:
+        - Healthcare
+        - EHR
+        - Practice Management
+        - PHP
+        - Open Source
+    readme: |-
+        # OpenEMR
+
+        [OpenEMR](https://www.open-emr.org/) is the most widely used open-source electronic medical records and practice management system — patient charts, scheduling, billing, e-prescribing, and a patient portal.
+
+        ## After deployment
+
+        1. First boot installs the database automatically (a few minutes).
+        2. Sign in at the service domain with the admin credentials from your variables, then change the password in Administration → Users.
+        3. Compliance is your responsibility — verify HIPAA/GDPR obligations before storing real patient data.
+
+        Template source: [nomideusz/openemr-railway](https://github.com/nomideusz/openemr-railway)
+    variables:
+        - key: PUBLIC_DOMAIN
+          type: DOMAIN
+          name: Public Domain
+          description: The domain of your OpenEMR instance
+    services:
+        - name: mysql
+          icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
+          template: PREBUILT
+          spec:
+            source:
+                image: ghcr.io/nomideusz/mysql-datadir:8
+            ports:
+                - id: database
+                  port: 3306
+                  type: TCP
+            volumes:
+                - id: data
+                  dir: /var/lib/mysql
+            env:
+                MYSQL_ROOT_PASSWORD:
+                    default: ${PASSWORD}
+                    expose: true
+                MYSQL_HOST:
+                    default: ${CONTAINER_HOSTNAME}
+                    expose: true
+        - name: openemr
+          icon: https://github.com/openemr.png
+          template: PREBUILT
+          domainKey: PUBLIC_DOMAIN
+          dependencies:
+            - mysql
+          spec:
+            source:
+                image: ghcr.io/nomideusz/openemr-railway:latest
+            ports:
+                - id: web
+                  port: 8080
+                  type: HTTP
+            volumes:
+                - id: sites
+                  dir: /var/www/localhost/htdocs/openemr/sites
+            env:
+                PORT:
+                    default: "8080"
+                    expose: false
+                MYSQL_HOST:
+                    default: ${MYSQL_HOST}
+                    expose: false
+                MYSQL_ROOT_PASS:
+                    default: ${MYSQL_ROOT_PASSWORD}
+                    expose: false
+                MYSQL_USER:
+                    default: openemr
+                    expose: false
+                MYSQL_PASS:
+                    default: ${PASSWORD}
+                    expose: false
+                OE_USER:
+                    default: admin
+                    expose: false
+                OE_PASS:
+                    default: ${PASSWORD}
+                    expose: false
+            instructions:
+                - title: Sign in with your admin credentials (first boot takes a few minutes)
+                  content: https://${ZEABUR_WEB_DOMAIN}
