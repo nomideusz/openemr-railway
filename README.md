@@ -1,6 +1,6 @@
 # Deploy and Host OpenEMR on Railway
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/openemr?utm_medium=integration&utm_source=button&utm_campaign=openemr)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/openemr?referralCode=sLjDXb&utm_medium=integration&utm_source=button&utm_campaign=openemr)
 
 [OpenEMR](https://www.open-emr.org/) is the most widely used open-source electronic medical records and practice management system: patient charts, scheduling, e-prescribing, billing, lab integrations, telehealth, and a patient portal — ONC-certified and translated into 30+ languages. A self-hosted alternative to per-provider-per-month EHR subscriptions.
 
